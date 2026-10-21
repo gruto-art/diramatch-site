@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dira Match runs real-estate listings, matching and deal processes with AI agents that adapt to every buyer, renter and owner.">
+<meta property="og:title" content="Dira Match">
+<meta property="og:description" content="The most stable asset deserves the most adaptive software.">
+<title>Dira Match</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a surveyor's plan sheet — hairline grid ground, condensed signage type for claims,
+   the property drawn as a floor plan and the software layer shown as live, changing text. */
+:root {
+  --paper: #EEF1ED;
+  --paper-2: #E3E8E2;
+  --ink: #121A16;
+  --ink-soft: #46524C;
+  --line: #C3CBC4;
+  --accent: #0A5C49;      /* jade: the stable asset */
+  --signal: #C98A12;      /* amber: the live software layer */
+  --on-accent: #F3F6F2;
+  --card: #F7F9F6;
+
+  --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --f-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(2rem, 4vw, 2.8rem);
+  --step-4: clamp(2.8rem, 7.2vw, 5.6rem);
+  --wrap: 1180px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E1412; --paper-2: #141C19; --ink: #E4EAE5; --ink-soft: #9AA79F; --line: #2A3631;
+    --accent: #4CC3A0; --signal: #F0B44A; --on-accent: #08110E; --card: #121A17;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E1412; --paper-2: #141C19; --ink: #E4EAE5; --ink-soft: #9AA79F; --line: #2A3631;
+  --accent: #4CC3A0; --signal: #F0B44A; --on-accent: #08110E; --card: #121A17;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+body {
+  background: var(--paper);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: fixed;
+  color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--f-body);
+  padding-inline: 16px;
+}
+body::before { /* fade the grid so text sits on calm paper */
+  content: ""; position: fixed; inset: 0; z-index: -1;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.wrap { max-width: var(--wrap); margin-inline: auto; }
+
+h1, h2, h3 { font-family: var(--f-display); font-weight: 800; line-height: .95; letter-spacing: .005em; text-wrap: balance; margin: 0; text-transform: uppercase; }
+h2 { font-size: var(--step-4); }
+h3 { font-size: var(--step-2); letter-spacing: .02em; }
+p { margin: 0; max-width: 64ch; }
+.eyebrow { font: 500 .78rem/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); display: flex; gap: .6rem; align-items: center; }
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+.lede { font-size: var(--step-1); color: var(--ink-soft); }
+.mono { font-family: var(--f-mono); }
+
+/* ---------- nav ---------- */
+header.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  margin-inline: -16px; padding: .8rem 16px;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: .6rem; text-decoration: none; }
+.brand b { font: 900 1.7rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .02em; }
+.brand b i { font-style: normal; color: var(--accent); }
+.brand span { font-size: .95rem; color: var(--ink-soft); direction: rtl; }
+.nav nav { display: flex; gap: 1.3rem; flex-wrap: wrap; }
+.nav nav a { text-decoration: none; font-size: .92rem; color: var(--ink-soft); }
+.nav nav a:hover { color: var(--ink); }
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(2.5rem, 6vw, 5rem) 3rem; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.hero h1 { font-size: var(--step-4); }
+.hero h1 .stable { color: var(--accent); }
+.hero h1 .live { color: var(--signal); }
+.hero-copy { display: grid; gap: 1.5rem; min-width: 0; }
+.cta-row { display: flex; flex-wrap: wrap; gap: .8rem; }
+.btn { display: inline-flex; align-items: center; gap: .5rem; padding: .8rem 1.2rem; font: 600 .95rem/1 var(--f-body); text-decoration: none; border: 1.5px solid var(--ink); cursor: pointer; background: transparent; color: var(--ink); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn:hover { transform: translateY(-1px); }
+
+/* demo panel */
+.demo { border: 1.5px solid var(--ink); background: var(--card); min-width: 0; }
+.demo-head { display: flex; justify-content: space-between; gap: 1rem; padding: .7rem 1rem; border-bottom: 1.5px solid var(--ink); font: 500 .75rem/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; flex-wrap: wrap; }
+.demo-head .live-dot { color: var(--signal); }
+.demo-head .live-dot::before { content: "●"; margin-right: .4rem; animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+.plan-wrap { padding: 1rem; border-bottom: 1px dashed var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: center; }
+.plan-wrap svg { width: 100%; max-width: 100%; height: auto; display: block; }
+.facts { font: 400 .8rem/1.7 var(--f-mono); color: var(--ink-soft); white-space: nowrap; }
+.facts b { color: var(--ink); font-weight: 500; }
+.personas { display: flex; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.personas button { flex: 1 0 auto; padding: .75rem .9rem; background: none; border: 0; border-right: 1px solid var(--line); font: 500 .85rem/1.2 var(--f-body); color: var(--ink-soft); cursor: pointer; text-align: left; }
+.personas button:last-child { border-right: 0; }
+.personas button[aria-selected="true"] { color: var(--ink); background: var(--paper-2); box-shadow: inset 0 -3px 0 var(--signal); }
+.personas small { display: block; font: 400 .7rem/1.3 var(--f-mono); color: var(--ink-soft); margin-top: .2rem; }
+.out { padding: 1.1rem 1.1rem 1.3rem; display: grid; gap: .8rem; min-height: 15.5rem; }
+.out .channel { font: 500 .72rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--signal); }
+.out h4 { margin: 0; font: 600 1.15rem/1.3 var(--f-body); }
+.out ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .3rem; font-size: .93rem; }
+.out .rtl { direction: rtl; text-align: right; }
+.out .rtl ul { padding-left: 0; padding-right: 1.1rem; }
+.out.swap { animation: swap .35s ease; }
+@keyframes swap { from { opacity: .3; transform: translateY(4px); } }
+.demo-foot { padding: .6rem 1rem; border-top: 1px solid var(--line); font: 400 .72rem/1.4 var(--f-mono); color: var(--ink-soft); }
+
+/* ---------- sections ---------- */
+section.block { padding-block: clamp(3.5rem, 8vw, 6rem); border-top: 1.5px solid var(--ink); display: grid; gap: 2.5rem; }
+.sec-head { display: grid; gap: 1rem; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; border: 1.5px solid var(--ink); }
+.split > div { padding: clamp(1.4rem, 3vw, 2.2rem); display: grid; gap: 1rem; align-content: start; min-width: 0; }
+.split > div + div { border-left: 1.5px solid var(--ink); }
+.split .tag { font: 500 .75rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; }
+.split .asset .tag { color: var(--accent); }
+.split .soft .tag { color: var(--signal); }
+.split h3 { font-size: var(--step-3); }
+.split dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .5rem 1rem; font-size: .93rem; }
+.split dt { font: 500 .78rem/1.6 var(--f-mono); color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+.split dd { margin: 0; }
+.bridge { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; font: 500 .9rem/1.5 var(--f-mono); color: var(--ink-soft); }
+.bridge strong { color: var(--ink); font-family: var(--f-body); font-size: 1.05rem; }
+
+/* flow (real sequence, so numbered) */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border: 1.5px solid var(--ink); counter-reset: step; }
+.flow li { padding: 1.2rem 1rem 1.4rem; display: grid; gap: .5rem; align-content: start; border-right: 1px solid var(--line); counter-increment: step; min-width: 0; }
+.flow li:last-child { border-right: 0; }
+.flow li::before { content: counter(step, decimal-leading-zero); font: 800 2.2rem/1 var(--f-display); color: var(--accent); }
+.flow b { font-size: .98rem; }
+.flow p { font-size: .88rem; color: var(--ink-soft); }
+.flow .who { font: 400 .7rem/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); }
+.flow .who.ai { color: var(--signal); }
+
+.facts-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.facts-row div { background: var(--paper); padding: 1.1rem 1rem; display: grid; gap: .3rem; }
+.facts-row .k { font: 800 2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.facts-row .v { font-size: .86rem; color: var(--ink-soft); }
+
+/* agents */
+.agents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.agent { border: 1px solid var(--line); background: var(--card); padding: 1.3rem; display: grid; gap: .7rem; align-content: start; grid-template-rows: auto auto 1fr auto; }
+.agent .top { display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; }
+.agent h3 { font-size: 1.45rem; }
+.status { font: 500 .68rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; padding: .35rem .5rem; border: 1px solid currentColor; white-space: nowrap; }
+.status.live { color: var(--accent); }
+.status.build { color: var(--signal); }
+.status.plan { color: var(--ink-soft); }
+.agent p { font-size: .92rem; color: var(--ink-soft); }
+.agent .io { font: 400 .74rem/1.5 var(--f-mono); color: var(--ink-soft); border-top: 1px dashed var(--line); padding-top: .7rem; }
+.agent .io b { color: var(--ink); font-weight: 500; }
+
+/* claude */
+.claude-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.claude-grid .col { display: grid; gap: 1.2rem; min-width: 0; }
+.uses { margin: 0; padding: 0; list-style: none; display: grid; border-top: 1px solid var(--line); }
+.uses li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--line); font-size: .93rem; }
+.uses li span:first-child { font: 500 .76rem/1.5 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.ask { border: 1.5px solid var(--ink); padding: 1.5rem; display: grid; gap: .9rem; background: var(--card); }
+.ask h3 { font-size: var(--step-2); }
+.ask ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .45rem; font-size: .93rem; }
+
+/* roadmap */
+.road { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 3px solid var(--ink); }
+.road > div { padding: 1.2rem 1.1rem 0 0; display: grid; gap: .6rem; align-content: start; position: relative; min-width: 0; }
+.road > div::before { content: ""; position: absolute; top: -9px; left: 0; width: 15px; height: 15px; background: var(--paper); border: 3px solid var(--ink); border-radius: 50%; }
+.road > div.now::before { background: var(--signal); border-color: var(--signal); }
+.road .when { font: 500 .78rem/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); padding-top: .4rem; }
+.road h3 { font-size: 1.5rem; }
+.road ul { margin: 0; padding-left: 1rem; display: grid; gap: .35rem; font-size: .9rem; color: var(--ink-soft); }
+
+/* contact */
+.contact { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 2rem; align-items: end; }
+.mail { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; }
+.mail code { font: 500 clamp(1.2rem, 3vw, 1.7rem)/1.2 var(--f-mono); user-select: all; border-bottom: 2px solid var(--accent); padding-bottom: .2rem; }
+.copied { font: 400 .8rem var(--f-mono); color: var(--accent); min-width: 5ch; }
+footer { padding-block: 2rem 3rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font: 400 .78rem/1.5 var(--f-mono); color: var(--ink-soft); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 980px) {
+  .hero, .claude-grid, .contact { grid-template-columns: minmax(0, 1fr); }
+  .agents { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .flow li { border-right: 0; border-bottom: 1px solid var(--line); grid-template-columns: 3.2rem minmax(0, 1fr); column-gap: .8rem; }
+  .flow li::before { grid-row: span 3; }
+  .flow li:last-child { border-bottom: 0; }
+  .road { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2rem; }
+  .facts-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .split > div + div { border-left: 0; border-top: 1.5px solid var(--ink); }
+  .agents, .road { grid-template-columns: minmax(0, 1fr); }
+  .plan-wrap { grid-template-columns: minmax(0, 1fr); }
+  .uses li { grid-template-columns: minmax(0, 1fr); gap: .2rem; }
+  .nav nav { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>Dira<i>Match</i></b><span>דירה מאצ׳</span></a>
+    <nav aria-label="Sections">
+      <a href="#today">Today</a>
+      <a href="#thesis">Thesis</a>
+      <a href="#agents">Agents</a>
+      <a href="#claude">Built on Claude</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Israel · Real estate × AI agents</div>
+      <h1>The <span class="stable">most stable</span> asset deserves the <span class="live">most adaptive</span> software.</h1>
+      <p class="lede">An apartment changes once a decade. The person looking at it changes every conversation. Dira Match runs the listing, the matching and the process with AI agents that rewrite the experience for each buyer, renter and owner. The property itself stays put.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#thesis">Read the thesis</a>
+        <a class="btn" href="#today">See what runs today</a>
+      </div>
+    </div>
+
+    <div class="demo" aria-label="Demo: one apartment, three buyers">
+      <div class="demo-head"><span>Listing DM-48213 · one property</span><span class="live-dot">Agent output</span></div>
+      <div class="plan-wrap">
+        <svg viewBox="0 0 320 190" role="img" aria-label="Floor plan of a 4-room apartment">
+          <g fill="none" stroke="currentColor" stroke-width="3" style="color: var(--ink)">
+            <rect x="6" y="6" width="308" height="178" />
+            <path d="M120 6 V84 M6 84 H82 M104 84 H190 M190 6 V62 M190 84 V184 M120 120 V184 M120 120 H164 M6 140 H58 M80 140 H120 M250 84 H314 M250 84 V108 M250 130 V184" />
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="1" style="color: var(--ink-soft)">
+            <path d="M82 84 A22 22 0 0 1 104 62" /><path d="M58 140 A22 22 0 0 0 80 118" /><path d="M164 120 A22 22 0 0 1 186 98" stroke-dasharray="2 3" />
+          </g>
+          <rect x="196" y="12" width="112" height="66" fill="currentColor" style="color: var(--accent); opacity: .12" />
+          <g font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" style="color: var(--ink-soft)">
+            <text x="20" y="40">BEDROOM</text><text x="20" y="52">3.4 × 3.1</text>
+            <text x="135" y="40">BEDROOM</text><text x="135" y="52">3.0 × 2.9</text>
+            <text x="204" y="36" style="fill: var(--accent)">MAMAD</text><text x="204" y="48" style="fill: var(--accent)">safe room</text>
+            <text x="20" y="168">BATH</text>
+            <text x="200" y="118">SALON + KITCHEN</text><text x="200" y="130">6.2 × 4.6</text>
+            <text x="262" y="160">MASTER</text>
+            <text x="128" y="160">BATH</text>
+          </g>
+        </svg>
+        <div class="facts">
+          <div><b>4</b> rooms</div>
+          <div><b>98</b> m² + 12 m² balcony</div>
+          <div>floor <b>3/8</b> · elevator</div>
+          <div><b>Ramat Gan</b>, Krinitzi</div>
+          <div><b>₪2,950,000</b></div>
+        </div>
+      </div>
+      <div class="personas" role="tablist" aria-label="Choose who is reading">
+        <button role="tab" id="p-family" aria-selected="true" data-p="family">Young family<small>Hebrew · WhatsApp</small></button>
+        <button role="tab" id="p-investor" aria-selected="false" data-p="investor">Investor<small>English · email</small></button>
+        <button role="tab" id="p-oleh" aria-selected="false" data-p="oleh">Moving from abroad<small>English · call script</small></button>
+      </div>
+      <div class="out" id="out" role="tabpanel" aria-live="polite"></div>
+      <div class="demo-foot">Illustrative example. Same facts, three renderings. The agent never changes a fact, only what leads.</div>
+    </div>
+  </section>
+
+  <!-- TODAY -->
+  <section class="block" id="today">
+    <div class="sec-head">
+      <div class="eyebrow">Live in Israel today</div>
+      <h2>A working listing network, run mostly by software.</h2>
+      <p class="lede">Dira Match started as a simple problem. In Israel, apartments are sold and rented through WhatsApp groups and word of mouth. We built a pipeline that takes a listing from the owner, checks it, and publishes it to our community channels with photos and a contact flow. One human approval step stays in the loop.</p>
+    </div>
+
+    <ol class="flow">
+      <li><span class="who">Owner</span><b>Submits the property</b><p>A web form with details and up to four photos. No account needed.</p></li>
+      <li><span class="who">System</span><b>Queues it for review</b><p>The listing lands in our operations sheet, marked "pending".</p></li>
+      <li><span class="who">Team</span><b>Approves with one click</b><p>A person flips the status. That is the only manual step.</p></li>
+      <li><span class="who ai">System</span><b>Publishes everywhere</b><p>Google Chat community card with a photo grid, plus WhatsApp distribution, under a listing code.</p></li>
+      <li><span class="who ai">AI</span><b>Handles the calls</b><p>Calls to our business line are recorded, transcribed in Hebrew and summarized into the CRM.</p></li>
+    </ol>
+
+    <div class="facts-row">
+      <div><span class="k">₪0 / 50 / 80</span><span class="v">Free, basic (text) and premium (text + 4 photos) listing plans</span></div>
+      <div><span class="k">2</span><span class="v">Distribution channels: Google Chat community and WhatsApp</span></div>
+      <div><span class="k">1</span><span class="v">Human step per listing: approval</span></div>
+      <div><span class="k">HE → EN</span><span class="v">Hebrew-first today, built to be multilingual</span></div>
+    </div>
+  </section>
+
+  <!-- THESIS -->
+  <section class="block" id="thesis">
+    <div class="sec-head">
+      <div class="eyebrow">The thesis</div>
+      <h2>Bedrock and signal.</h2>
+      <p class="lede">Real estate is the asset people trust most because it barely moves. Software is valuable because it moves constantly. Today the two are joined by brokers, spreadsheets and group chats. We think the join itself is the product.</p>
+    </div>
+
+    <div class="split">
+      <div class="asset">
+        <span class="tag">The asset · stable</span>
+        <h3>The apartment</h3>
+        <dl>
+          <dt>Changes</dt><dd>Once in years: renovation, price, ownership</dd>
+          <dt>Truth</dt><dd>Rooms, square meters, floor, safe room, permits</dd>
+          <dt>Value</dt><dd>Trust, permanence, the biggest purchase of a life</dd>
+          <dt>Rule</dt><dd>Facts are verified once and never rewritten</dd>
+        </dl>
+      </div>
+      <div class="soft">
+        <span class="tag">The software · dynamic</span>
+        <h3>The experience</h3>
+        <dl>
+          <dt>Changes</dt><dd>Every conversation, per person, per language</dd>
+          <dt>Truth</dt><dd>What this buyer cares about right now</dd>
+          <dt>Value</dt><dd>Speed, relevance, nothing falls through the cracks</dd>
+          <dt>Rule</dt><dd>Agents adapt framing, order and channel, never the facts</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="bridge"><strong>One verified record per property.</strong> Unlimited renderings of it, each written for the person reading.</div>
+  </section>
+
+  <!-- AGENTS -->
+  <section class="block" id="agents">
+    <div class="sec-head">
+      <div class="eyebrow">The agent layer</div>
+      <h2>Agents that build and run the whole process.</h2>
+      <p class="lede">Each agent owns one stage of a property's life, from first contact to signed contract. They share a single property record and a single customer history. A person stays in charge of every irreversible step.</p>
+    </div>
+
+    <div class="agents">
+      <article class="agent">
+        <div class="top"><h3>Intake</h3><span class="status live">Live</span></div>
+        <p>Collects the listing from the owner, normalizes it, and flags missing or suspicious details before a human sees it.</p>
+        <span></span>
+        <div class="io"><b>In:</b> owner form, photos<br><b>Out:</b> verified property record</div>
+      </article>
+      <article class="agent">
+        <div class="top"><h3>Voice</h3><span class="status build">In build</span></div>
+        <p>One business number for the team. Every call is recorded, transcribed in Hebrew, summarized, and filed with the next action.</p>
+        <span></span>
+        <div class="io"><b>In:</b> phone calls<br><b>Out:</b> transcript, summary, follow-up task</div>
+      </article>
+      <article class="agent">
+        <div class="top"><h3>Personalizer</h3><span class="status plan">Next</span></div>
+        <p>Renders the same listing for each reader: language, emphasis, length and channel. The demo above shows the idea.</p>
+        <span></span>
+        <div class="io"><b>In:</b> property record + reader profile<br><b>Out:</b> message, page or script</div>
+      </article>
+      <article class="agent">
+        <div class="top"><h3>Matcher</h3><span class="status plan">Next</span></div>
+        <p>Learns what each seeker wants from their messages and calls, then reaches out when the right property appears.</p>
+        <span></span>
+        <div class="io"><b>In:</b> conversations, saved searches<br><b>Out:</b> ranked matches with reasons</div>
+      </article>
+      <article class="agent">
+        <div class="top"><h3>Process</h3><span class="status plan">Planned</span></div>
+        <p>Schedules viewings, gathers documents, tracks offers, and keeps buyer, seller, lawyer and mortgage advisor on one timeline.</p>
+        <span></span>
+        <div class="io"><b>In:</b> deal state<br><b>Out:</b> reminders, checklists, status for every party</div>
+      </article>
+      <article class="agent">
+        <div class="top"><h3>Builder</h3><span class="status plan">Planned</span></div>
+        <p>Sets up the whole stack for a new market or partner agency (forms, channels, phone line, CRM) from a short brief.</p>
+        <span></span>
+        <div class="io"><b>In:</b> market brief<br><b>Out:</b> a running local instance</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CLAUDE -->
+  <section class="block" id="claude">
+    <div class="sec-head">
+      <div class="eyebrow">Built on Claude</div>
+      <h2>A two-person team shipping like a twenty-person one.</h2>
+    </div>
+    <div class="claude-grid">
+      <div class="col">
+        <p class="lede">Dira Match is built and operated with Claude. Our system was written with Claude Code, and Claude models do the language work in production. That is how a small founding team runs a listing network, a CRM and a phone line at once.</p>
+        <ul class="uses">
+          <li><span>Engineering</span><span>The whole platform (forms, publishing, payments, CRM, phone line) is developed and maintained with Claude Code.</span></li>
+          <li><span>Call intelligence</span><span>Claude Haiku turns Hebrew call transcripts into a summary, the customer's intent, city, budget and the next step.</span></li>
+          <li><span>Operations</span><span>Health checks, diagnostics and deploys run through Claude agents with defined playbooks.</span></li>
+          <li><span>Next</span><span>Listing personalization and buyer matching, in Hebrew and English first.</span></li>
+        </ul>
+      </div>
+      <aside class="ask">
+        <div class="eyebrow">What support from Anthropic unlocks</div>
+        <h3>From one market to many</h3>
+        <ul>
+          <li>API credits to run personalization and matching on every listing and every lead, not a sample.</li>
+          <li>Room to move key agents to stronger models where a wrong answer costs a deal.</li>
+          <li>Guidance on agent design for regulated, high-trust transactions.</li>
+          <li>A reference case: AI agents running a real-world asset class end to end.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="block" id="roadmap">
+    <div class="sec-head">
+      <div class="eyebrow">Roadmap · plan, not promise</div>
+      <h2>From Israel outward.</h2>
+    </div>
+    <div class="road">
+      <div class="now">
+        <span class="when">Q4 2026 · now</span>
+        <h3>Foundation</h3>
+        <ul><li>New brand and domain: diramatch.com</li><li>AI phone line with transcripts in the CRM</li><li>Free listing period to grow supply</li></ul>
+      </div>
+      <div>
+        <span class="when">H1 2027</span>
+        <h3>Personal</h3>
+        <ul><li>Personalizer agent on every listing</li><li>Matcher agent for seekers</li><li>English experience for buyers from abroad</li></ul>
+      </div>
+      <div>
+        <span class="when">H2 2027</span>
+        <h3>Process</h3>
+        <ul><li>Viewings, documents and offers run by agents</li><li>Partner agencies on the platform</li></ul>
+      </div>
+      <div>
+        <span class="when">2028</span>
+        <h3>International</h3>
+        <ul><li>Builder agent launches the first market outside Israel</li><li>One property standard across markets</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="block" id="contact">
+    <div class="contact">
+      <div class="sec-head">
+        <div class="eyebrow">Contact</div>
+        <h2>Talk to the founders.</h2>
+        <p class="lede">Partners, investors, and teams who want to see the system running. Write to us and you will hear back from a person.</p>
+      </div>
+      <div class="mail">
+        <code id="email">dirot4all.com@dirot4all.com</code>
+        <button class="btn" id="copy" type="button">Copy</button>
+        <span class="copied" id="copied" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dira Match · דירה מאצ׳ · Israel</span>
+    <span>Real estate is the bedrock. Software is the signal.</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var content = {
+    family: {
+      channel: "WhatsApp · Hebrew",
+      rtl: true,
+      title: "4 חדרים ברמת גן, עם ממ״ד ומעלית, ליד גני ילדים",
+      points: [
+        "ממ״ד צמוד לחדר הילדים",
+        "מרפסת 12 מ״ר, מספיק לפינת משחק",
+        "5 דקות הליכה לגן ולבית ספר יסודי בקריניצי",
+        "קומה 3 עם מעלית, נוח לעגלה",
+        "₪2,950,000 · אפשר לתאם ביקור כבר השבוע"
+      ]
+    },
+    investor: {
+      channel: "Email · English",
+      rtl: false,
+      title: "4-room unit in Ramat Gan: ₪30,100 per m², strong rental demand",
+      points: [
+        "98 m² + 12 m² balcony at ₪2.95M asking",
+        "Krinitzi area: steady family rental demand near schools",
+        "Safe room (mamad) included, a top filter for renters",
+        "Elevator building, floor 3 of 8, no immediate renovation needed",
+        "Ask for the comparable sales sheet for the street"
+      ]
+    },
+    oleh: {
+      channel: "Call script · English",
+      rtl: false,
+      title: "\"A quiet family street, 15 minutes from Tel Aviv, with a safe room.\"",
+      points: [
+        "Open with the commute: about 15 minutes to central Tel Aviv",
+        "Explain the mamad: a reinforced room, required in new builds",
+        "\"4 rooms\" in Israel counts the living room: 3 bedrooms",
+        "Offer a video walkthrough before they fly in",
+        "Mention English-speaking lawyers and mortgage advisors we work with"
+      ]
+    }
+  };
+
+  var out = document.getElementById("out");
+  var tabs = document.querySelectorAll(".personas button");
+
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+  function render(key, animate) {
+    var c = content[key];
+    out.setAttribute("aria-labelledby", "p-" + key);
+    out.innerHTML =
+      '<span class="channel">' + esc(c.channel) + '</span>' +
+      '<div class="' + (c.rtl ? "rtl" : "") + '"' + (c.rtl ? ' lang="he"' : '') + '>' +
+        '<h4>' + esc(c.title) + '</h4>' +
+        '<ul>' + c.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + '</ul>' +
+      '</div>';
+    if (animate) { out.classList.remove("swap"); void out.offsetWidth; out.classList.add("swap"); }
+  }
+
+  tabs.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabs.forEach(function (b) { b.setAttribute("aria-selected", String(b === btn)); });
+      render(btn.dataset.p, true);
+    });
+  });
+  render("family", false);
+
+  var copyBtn = document.getElementById("copy");
+  var copied = document.getElementById("copied");
+  copyBtn.addEventListener("click", function () {
+    var text = document.getElementById("email").textContent;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById("email"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      copied.textContent = "Selected";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { copied.textContent = "Copied"; }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+})();
+</script>
+</body>
+</html>
